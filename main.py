@@ -1,3 +1,4 @@
+cat << 'EOF' > main.py
 import os
 import time
 from selenium import webdriver
@@ -63,11 +64,9 @@ def process_sheet():
     sheet = get_google_sheet()
     records = sheet.get_all_records()
     
-    for i, row in enumerate(records, start=2):  # start=2 because sheets are 1-indexed and header is row 1
-        url = row.get('URL')  # Assuming column A header is "URL"
-        
-        # Skip if no URL or email already exists
-        if not url or sheet.cell(i, 2).value:  # Column B is index 2
+    for i, row in enumerate(records, start=2):
+        url = row.get('URL')
+        if not url or sheet.cell(i, 2).value:
             continue
             
         print(f"Processing {url}")
@@ -75,10 +74,11 @@ def process_sheet():
         
         if email:
             print(f"Found email: {email}")
-            sheet.update_cell(i, 2, email)  # Update Column B
-            time.sleep(2)  # Be polite to Craigslist
+            sheet.update_cell(i, 2, email)
+            time.sleep(2)
         else:
             sheet.update_cell(i, 2, "NOT FOUND")
 
 if __name__ == "__main__":
     process_sheet()
+EOF
